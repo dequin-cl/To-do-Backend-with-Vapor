@@ -16,6 +16,9 @@ struct UserController: RouteCollection {
         let token = routes.grouped("me").grouped(UserToken.authenticator())
         token.get(use: getMe)
         
+        let jwt = routes.grouped("mee")
+        jwt.get(use: mee)
+        
     }
     
     func create(req: Request) throws -> EventLoopFuture<User> {
@@ -38,6 +41,12 @@ struct UserController: RouteCollection {
     
     func getMe(req: Request) throws -> User {
         try req.auth.require(User.self)
+    }
+    
+    func mee(req: Request) throws -> HTTPStatus {
+        let payload = try req.jwt.verify(as: TestPayload.self)
+        print(payload)
+        return .ok
     }
 }
 
