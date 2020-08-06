@@ -11,22 +11,14 @@ public func configure(_ app: Application) throws {
     let certPath = homePath + "cert/cert.pem"
     let keyPath = homePath + "cert/key.pem"
     
-    let certs = try! NIOSSLCertificate.fromPEMFile(certPath)
-        .map { NIOSSLCertificateSource.certificate($0) }
-    let tls = TLSConfiguration.forServer(certificateChain: certs, privateKey: .file(keyPath))
-
-    app.http.server.configuration = .init(hostname: "127.0.0.1",
-                                          port: 8080,
-                                          backlog: 256,
-                                          reuseAddress: true,
-                                          tcpNoDelay: true,
-                                          responseCompression: .disabled,
-                                          requestDecompression: .disabled,
-                                          supportPipelining: false,
-                                          supportVersions: Set<HTTPVersionMajor>([.two]),
-                                          tlsConfiguration: tls,
-                                          serverName: nil,
-                                          logger: nil)
+    app.http.server.configuration.supportVersions = [.two]
+    try app.http.server.configuration.tlsConfiguration = .forServer(
+        certificateChain: [
+            .certificate(.init(file: certPath,
+                               format: .pem))
+        ],
+        privateKey: .file(keyPath)
+    )
 
     app.databases.use(.postgres(
         hostname: Environment.get("DATABASE_HOST") ?? "localhost",
