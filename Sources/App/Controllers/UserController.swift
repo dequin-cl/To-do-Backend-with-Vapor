@@ -18,6 +18,7 @@ struct UserController: RouteCollection {
         
         let jwt = routes.grouped("mee")
         jwt.get(use: mee)
+        jwt.post(use: login)
         
     }
     
@@ -47,6 +48,17 @@ struct UserController: RouteCollection {
         let payload = try req.jwt.verify(as: TestPayload.self)
         print(payload)
         return .ok
+    }
+    
+    func login(req: Request) throws -> [String: String] {
+        let payload = TestPayload(
+            subject: "vapor",
+            expiration: .init(value: .distantFuture),
+            isAdmin: true)
+        
+        return try [
+            "token": req.jwt.sign(payload)
+        ]
     }
 }
 
