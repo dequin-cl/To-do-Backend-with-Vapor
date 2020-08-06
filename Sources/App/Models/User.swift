@@ -52,7 +52,7 @@ extension User.Create: Validatable {
     }
 }
 
-// MARK:- Authentication
+// MARK:- Authentication Validate Password
 extension User: ModelAuthenticatable {
     static let usernameKey = \User.$email
     static let passwordHashKey = \User.$passwordHash
@@ -62,7 +62,7 @@ extension User: ModelAuthenticatable {
     }
 }
 
-// MARK:- Token
+// MARK:- Token Authentication
 extension User {
     func generateToken() throws -> UserToken {
         try .init(

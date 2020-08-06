@@ -3,5 +3,4 @@ This is a repo writen in Swift and Vapor framework. The intention is to learn Va
 
 The project uses postgresql
 
-# Current Query
-On the AppTests file, the test testCreateTodo fails and I want to know what should be the SetUp process.
+Enabled HTTP/2 with a little help from https://theswiftdev.com/a-simple-http2-server-using-vapor-4/
