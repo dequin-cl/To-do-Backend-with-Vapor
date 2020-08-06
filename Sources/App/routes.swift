@@ -12,4 +12,12 @@ func routes(_ app: Application) throws {
 
     try app.register(collection: TodoController())
     try app.register(collection: TaskController())
+    try app.register(collection: UserController())
+    try app.register(collection: AuthController())
+    
+//    let passwordProtected = app.grouped(User.authenticator())
+//    passwordProtected.post("login") { req -> User in
+//        
+//        try req.auth.require(User.self)
+//    }
 }

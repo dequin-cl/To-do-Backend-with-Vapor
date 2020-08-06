@@ -30,6 +30,10 @@ public func configure(_ app: Application) throws {
     app.migrations.add(CreateTodo())
     app.migrations.add(AddAddressTodo())
     app.migrations.add(CreateTask())
+    
+    app.migrations.add(User.CreateMigration())
+    
+    app.migrations.add(UserToken.Migration())
 
     // register routes
     try routes(app)
