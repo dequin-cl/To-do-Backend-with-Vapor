@@ -22,33 +22,18 @@ final class User: Model, Content {
     
     @Field(key: "password_hash")
     var passwordHash: String
+
+    @Field(key: "is_admin")
+    var isAdmin: Bool
     
     init() {    }
     
-    init(id: UUID? = nil, name: String, email: String, passwordHash: String) {
+    init(id: UUID? = nil, name: String, email: String, passwordHash: String, isAdmin: Bool = false) {
         self.id = id
         self.name = name
         self.email = email
         self.passwordHash = passwordHash
-    }
-}
-
-// MARK:- TDO
-extension User {
-    struct Create: Content {
-        var name: String
-        var email: String
-        var password: String
-        var confirmPassword: String
-    }
-}
-
-// MARK:- Validation for Creation
-extension User.Create: Validatable {
-    static func validations(_ validations: inout Validations) {
-        validations.add("name", as: String.self, is: !.empty)
-        validations.add("email", as: String.self, is: .email)
-        validations.add("password", as: String.self, is: .count(8...))
+        self.isAdmin = isAdmin
     }
 }
 

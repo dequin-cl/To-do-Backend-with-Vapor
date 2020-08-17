@@ -5,9 +5,12 @@ import JWT
 
 // configures your application
 public func configure(_ app: Application) throws {
+
+//    app.logger.logLevel = .debug
+
     // uncomment to serve files from /Public folder
     // app.middleware.use(FileMiddleware(publicDirectory: app.directory.publicDirectory))
-    app.jwt.signers.use(.hs256(key: "secret"))
+    app.jwt.signers.use(.hs512(key: "secret"))
     
     let homePath = app.directory.workingDirectory
     let certPath = homePath + "cert/cert.pem"
@@ -29,13 +32,13 @@ public func configure(_ app: Application) throws {
         database: Environment.get("DATABASE_NAME") ?? "vapor_database"
     ), as: .psql)
 
-    app.migrations.add(CreateTodo())
-    app.migrations.add(AddAddressTodo())
-    app.migrations.add(CreateTask())
+//    app.migrations.add(CreateTodo())
+//    app.migrations.add(AddAddressTodo())
+//    app.migrations.add(CreateTask())
     
     app.migrations.add(User.CreateMigration())
-    
     app.migrations.add(UserToken.Migration())
+    app.migrations.add(User.PrePopulateUser())
 
     // register routes
     try routes(app)
