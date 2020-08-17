@@ -22,7 +22,7 @@ struct UserController: RouteCollection {
         admins.get(use: me)
 
         let users = routes.grouped("users")
-        users.grouped("login").post(use: loginUser)
+        users.grouped(User.authenticator()).grouped("login").post(use: loginUser)
 
         let tokenProtected = users.grouped(UserToken.authenticator())
 
