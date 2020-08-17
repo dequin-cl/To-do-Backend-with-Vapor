@@ -10,7 +10,7 @@ public func configure(_ app: Application) throws {
 
     // uncomment to serve files from /Public folder
     // app.middleware.use(FileMiddleware(publicDirectory: app.directory.publicDirectory))
-    app.jwt.signers.use(.hs512(key: "secret"))
+    app.jwt.signers.use(.hs512(key: Environment.get("SIGNERS_SECRET") ?? "secret"))
     
     let homePath = app.directory.workingDirectory
     let certPath = homePath + "cert/cert.pem"
