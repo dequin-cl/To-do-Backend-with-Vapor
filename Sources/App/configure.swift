@@ -6,7 +6,7 @@ import JWT
 // configures your application
 public func configure(_ app: Application) throws {
 
-//    app.logger.logLevel = .debug
+    app.logger.logLevel = .trace
 
     // uncomment to serve files from /Public folder
     // app.middleware.use(FileMiddleware(publicDirectory: app.directory.publicDirectory))

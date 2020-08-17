@@ -82,7 +82,8 @@ struct UserController: RouteCollection {
         .flatMapThrowing { user -> NewSession in
             let payload = TestPayload(
                 subject: .init(value: "vapor\(user.name)"),
-                expiration: .init(value: .distantFuture)
+                expiration: .init(value: .distantFuture),
+                isAdmin: true
             )
 
             return try NewSession(token: req.jwt.sign(payload), user: UserDTO(from: user))
