@@ -33,29 +33,33 @@ struct UserController: RouteCollection {
 
     // MARK:- Administrators
     func create(req: Request) throws -> EventLoopFuture<User> {
-        _ = try req.jwt.verify(as: TestPayload.self)
+        let payload = try req.jwt.verify(as: TestPayload.self)
 
-        let protoAdmin: User = try req.auth.require(User.self)
+        return User
+            .find(UUID(uuidString: payload.subject.value), on: req.db)
+            .flatMapThrowing{ protoAdmin -> User in
 
-        if !protoAdmin.isAdmin {
-                throw Abort(.unauthorized)
+                guard let protoAdmin = protoAdmin, protoAdmin.isAdmin else {
+                    throw Abort(.unauthorized)
+                }
+
+                try UserDTO.Create.validate(content: req)
+
+                let create = try req.content.decode(UserDTO.Create.self)
+                guard create.password == create.confirmPassword else {
+                    throw Abort(.badRequest, reason: "Passwords did not match")
+                }
+
+                return try User(
+                    name: create.name,
+                    email: create.email,
+                    passwordHash: Bcrypt.hash(create.password)
+                )
         }
-        
-        try UserDTO.Create.validate(content: req)
-        
-        let create = try req.content.decode(UserDTO.Create.self)
-        guard create.password == create.confirmPassword else {
-            throw Abort(.badRequest, reason: "Passwords did not match")
+        .flatMap { user -> EventLoopFuture<User> in
+            return user.save(on: req.db)
+                .map {user}
         }
-        
-        let user = try User(
-            name: create.name,
-            email: create.email,
-            passwordHash: Bcrypt.hash(create.password)
-        )
-        
-        return user.save(on: req.db)
-            .map {user}
     }
 
     func me(req: Request) throws -> HTTPStatus {
@@ -81,7 +85,7 @@ struct UserController: RouteCollection {
         }
         .flatMapThrowing { user -> NewSession in
             let payload = TestPayload(
-                subject: .init(value: "vapor\(user.name)"),
+                subject: .init(value: try user.requireID().uuidString),
                 expiration: .init(value: .distantFuture),
                 isAdmin: true
             )
