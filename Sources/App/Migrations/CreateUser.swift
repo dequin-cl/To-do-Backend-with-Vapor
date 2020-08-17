@@ -29,7 +29,8 @@ extension User {
     }
 
     struct PrePopulateUser: Migration {
-
+        var name: String { "CreateAdmin" }
+        
         func prepare(on database: Database) -> EventLoopFuture<Void> {
             let password = try? Bcrypt.hash(Environment.get("FIRST_USER_PASSWORD") ?? "secret")
             guard let hashedPassword = password else {

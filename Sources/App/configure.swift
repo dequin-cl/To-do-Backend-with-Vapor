@@ -31,14 +31,13 @@ public func configure(_ app: Application) throws {
         password: Environment.get("DATABASE_PASSWORD") ?? "vapor_password",
         database: Environment.get("DATABASE_NAME") ?? "vapor_database"
     ), as: .psql)
-
-//    app.migrations.add(CreateTodo())
-//    app.migrations.add(AddAddressTodo())
-//    app.migrations.add(CreateTask())
     
     app.migrations.add(User.CreateMigration())
     app.migrations.add(UserToken.Migration())
     app.migrations.add(User.PrePopulateUser())
+
+    // Run migration from within Xcode, because call to Bcrypt from command line fails on Swift < 5.3
+    try app.autoMigrate().wait()
 
     // register routes
     try routes(app)
