@@ -16,7 +16,7 @@ struct NewSession: Content {
 struct UserController {
 
     // MARK:- Users
-    func loginUser(req: Request) throws -> EventLoopFuture<NewSession> {
+    func signIn(req: Request) throws -> EventLoopFuture<NewSession> {
         let user = try req.auth.require(User.self)
         let token = try user.generateToken()
 
@@ -33,7 +33,7 @@ struct UserController {
         return UserDTO(from: user)
     }
 
-    func logout(req: Request) throws -> EventLoopFuture<HTTPResponseStatus> {
+    func signOut(req: Request) throws -> EventLoopFuture<HTTPResponseStatus> {
         let user: User = try req.auth.require(User.self)
 
         return try UserToken

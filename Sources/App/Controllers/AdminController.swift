@@ -39,10 +39,15 @@ struct AdminController {
             }
     }
 
-    func me(req: Request) throws -> HTTPStatus {
-        _ = try req.jwt.verify(as: AdminJWTPayload.self)
+    func me(req: Request) throws -> EventLoopFuture<AdminDTO> {
+        let payload = try req.jwt.verify(as: AdminJWTPayload.self)
 
-        return .ok
+        return User
+            .find(UUID(uuidString: payload.subject.value), on: req.db)
+            .unwrap(or: Abort(.notFound))
+            .map { (user) -> AdminDTO in
+                AdminDTO(from: user)
+            }
     }
 
     func login(req: Request) throws -> EventLoopFuture<NewSession> {

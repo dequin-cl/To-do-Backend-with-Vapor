@@ -10,20 +10,18 @@ import Vapor
 // Login
 
 struct UserDTO: Content {
-    let id: UUID?
     let fullName: String
     let email: String
     let isAdmin: Bool
 
-    init(id: UUID? = nil, fullName: String, email: String, isAdmin: Bool) {
-        self.id = id
+    init(fullName: String, email: String, isAdmin: Bool) {
         self.fullName = fullName
         self.email = email
         self.isAdmin = isAdmin
     }
 
     init(from user: User) {
-        self.init(id: user.id, fullName: user.name, email: user.email, isAdmin: user.isAdmin)
+        self.init(fullName: user.name, email: user.email, isAdmin: user.isAdmin)
     }
 }
 

@@ -13,12 +13,12 @@ struct UserRouter: RouteCollection {
     func boot(routes: RoutesBuilder) throws {
 
         let users = routes.grouped("users")
-        users.grouped(User.authenticator()).grouped("login").post(use: controller.loginUser)
+        users.grouped(User.authenticator()).grouped("signin").post(use: controller.signIn)
 
         let tokenProtected = users.grouped(UserToken.authenticator())
 
         tokenProtected.get(use: controller.profile)
-        tokenProtected.grouped("logout").get(use: controller.logout)
+        tokenProtected.grouped("signout").get(use: controller.signOut)
 
     }
 }
