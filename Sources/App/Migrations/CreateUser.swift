@@ -9,8 +9,8 @@ import Fluent
 import Vapor
 
 extension User {
-    struct CreateMigration: Fluent.Migration {
-        var name: String { "CreateUser" }
+    struct CreateUser: Fluent.Migration {
+        var name: String { "Create User" }
         
         func prepare(on database: Database) -> EventLoopFuture<Void> {
             database.schema("users")
@@ -28,17 +28,18 @@ extension User {
         }
     }
 
-    struct PrePopulateUser: Migration {
-        var name: String { "CreateAdmin" }
+    struct CreateDefaultAdminUser: Migration {
+        var name: String { "Create Admin" }
         
         func prepare(on database: Database) -> EventLoopFuture<Void> {
-            let password = try? Bcrypt.hash(Environment.get("FIRST_USER_PASSWORD") ?? "secret")
+
+            let password = try? Bcrypt.hash(Utils.getFromEnvironment("FIRST_USER_PASSWORD", default: "secret"))
             guard let hashedPassword = password else {
                 fatalError("Failed to create admin user")
             }
             let admin = User(
-                name: Environment.get("FIRST_USER_NAME") ?? "dummy",
-                email: Environment.get("FIRST_USER_EMAIL") ?? "dummy@ecorp.org.lab",
+                name: Utils.getFromEnvironment("FIRST_USER_NAME", default: "dummy"),
+                email: Utils.getFromEnvironment("FIRST_USER_EMAIL", default: "dummy@ecorp.org.lab"),
                 passwordHash: hashedPassword,
                 isAdmin: true)
 
@@ -48,7 +49,7 @@ extension User {
         func revert(on database: Database) -> EventLoopFuture<Void> {
             return User
                 .query(on: database)
-                .filter(\User.$name, .equal, Environment.get("FIRST_USER_NAME") ?? "dummy")
+                .filter(\User.$name, .equal, Utils.getFromEnvironment("FIRST_USER_NAME", default: "dummy"))
                 .delete()
         }
     }

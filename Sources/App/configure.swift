@@ -14,12 +14,17 @@ public func configure(_ app: Application) throws {
     
     let homePath = app.directory.workingDirectory
     let certPath = homePath + "cert/cert.pem"
+    let chainPath = homePath + "cert/chain.pem"
     let keyPath = homePath + "cert/key.pem"
-    
+
     app.http.server.configuration.supportVersions = [.two]
+    app.http.server.configuration.responseCompression = .enabled
+
     try app.http.server.configuration.tlsConfiguration = .forServer(
         certificateChain: [
             .certificate(.init(file: certPath,
+                               format: .pem)),
+            .certificate(.init(file: chainPath,
                                format: .pem))
         ],
         privateKey: .file(keyPath)
@@ -32,9 +37,9 @@ public func configure(_ app: Application) throws {
         database: Environment.get("DATABASE_NAME") ?? "vapor_database"
     ), as: .psql)
     
-    app.migrations.add(User.CreateMigration())
-    app.migrations.add(UserToken.Migration())
-    app.migrations.add(User.PrePopulateUser())
+    app.migrations.add(User.CreateUser())
+    app.migrations.add(User.CreateDefaultAdminUser())
+    app.migrations.add(UserToken.CreateUserToken())
 
     // Run migration from within Xcode, because call to Bcrypt from command line fails on Swift < 5.3
     try app.autoMigrate().wait()

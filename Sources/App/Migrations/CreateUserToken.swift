@@ -8,8 +8,8 @@
 import Fluent
 
 extension UserToken {
-    struct Migration: Fluent.Migration {
-        var name: String { "CreateUserToken" }
+    struct CreateUserToken: Fluent.Migration {
+        var name: String { "Create User Token" }
         
         func prepare(on database: Database) -> EventLoopFuture<Void> {
             database.schema("user_tokens")

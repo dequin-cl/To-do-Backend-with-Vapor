@@ -7,7 +7,7 @@
 
 import JWTKit
 
-struct TestPayload: JWTPayload, Equatable {
+struct AdminJWTPayload: JWTPayload, Equatable {
     // Maps the longer Swift property names to the
     // shortened keys used in the JWT payload.
     enum CodingKeys: String, CodingKey {

@@ -1,15 +1,7 @@
 import Fluent
 import Vapor
 
-struct TodoController: RouteCollection {
-    func boot(routes: RoutesBuilder) throws {
-        let todos = routes.grouped("todos")
-        todos.get(use: index)
-        todos.post(use: create)
-        todos.group(":todoID") { todo in
-            todo.delete(use: delete)
-        }
-    }
+struct TodoController {
 
     func index(req: Request) throws -> EventLoopFuture<[Todo]> {
         return Todo.query(on: req.db).with(\.$tasks).all()

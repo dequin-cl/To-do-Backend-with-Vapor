@@ -8,11 +8,7 @@
 import Fluent
 import Vapor
 
-struct AuthController: RouteCollection {
-    func boot(routes: RoutesBuilder) throws {
-        let auth = routes.grouped("login").grouped(User.authenticator())
-        auth.post(use: login)
-    }
+struct AuthController {
     
     func login(req: Request) throws -> EventLoopFuture<UserToken> {
         let user = try req.auth.require(User.self)
