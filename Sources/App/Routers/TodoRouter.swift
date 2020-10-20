@@ -11,11 +11,14 @@ struct TodoRouter: RouteCollection {
     private let controller = TodoController()
 
     func boot(routes: RoutesBuilder) throws {
-        let todos = routes.grouped("todos")
+        let todos = routes.grouped("todos").grouped(UserToken.authenticator())
+
         todos.get(use: controller.index)
         todos.post(use: controller.create)
-        todos.group(":todoID") { todo in
+        
+        todos.group(":id") { todo in
             todo.delete(use: controller.delete)
+            todo.get(use: controller.info)
         }
     }
 }

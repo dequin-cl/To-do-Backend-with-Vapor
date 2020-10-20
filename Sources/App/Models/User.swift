@@ -25,6 +25,9 @@ final class User: Model, Content {
 
     @Field(key: "is_admin")
     var isAdmin: Bool
+
+    @Children(for: \.$user)
+    var todos: [Todo]
     
     init() {    }
     

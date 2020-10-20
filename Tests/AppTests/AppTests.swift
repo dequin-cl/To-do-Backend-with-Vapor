@@ -23,7 +23,7 @@ final class AppTests: XCTestCase {
         
         try app.test(.POST, "todos", beforeRequest: { req in
             try req.content.encode(
-                Todo(title: "Test")
+                Todo(title: "Test", owner: UUID.generateRandom())
             )
         }, afterResponse: { res in
             XCTAssertEqual(res.status, .ok)

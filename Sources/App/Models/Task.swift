@@ -17,10 +17,10 @@ final class Task: Model, Content {
     @Parent(key: "todo_id")
     var todo: Todo
 
-    // Creates a new, empty Star.
+    // Creates a new, empty Task.
     init() { }
 
-    // Creates a new Star with all properties set.
+    // Creates a new Task with all properties set.
     init(id: UUID? = nil, name: String, todoID: UUID) {
         self.id = id
         self.name = name
