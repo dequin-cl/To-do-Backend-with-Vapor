@@ -2,7 +2,7 @@ Packages
 .build
 xcuserdata
 *.xcodeproj
-DerivedData/
+*DerivedData/
 .DS_Store
 db.sqlite
 .swiftpm
