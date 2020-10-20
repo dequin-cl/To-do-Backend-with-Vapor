@@ -13,35 +13,10 @@ final class Todo: Model, Content {
     @Children(for: \.$todo)
     var tasks: [Task]
 
-    @Group(key: "address")
-    var address: Address
-
     init() { }
 
-
-    init(id: UUID? = nil, title: String, address: Address) {
+    init(id: UUID? = nil, title: String) {
         self.id = id
         self.title = title
-        self.address = address
-    }
-}
-
-final class Address: Fields {
-    
-    @OptionalField(key: "street")
-    var street: String?
-    
-    @Field(key: "number")
-    var number: Int
-    
-    @OptionalField(key: "other_information")
-    var otherInformation: String?
-    
-    init() { }
-    
-    init(street: String? = nil, number: Int, otherInformation: String? = nil) {
-        self.street = street
-        self.number = number
-        self.otherInformation = otherInformation
     }
 }

@@ -36,14 +36,9 @@ public func configure(_ app: Application) throws {
         password: Environment.get("DATABASE_PASSWORD") ?? "vapor_password",
         database: Environment.get("DATABASE_NAME") ?? "vapor_database"
     ), as: .psql)
-    
-    app.migrations.add(User.CreateUser())
-    app.migrations.add(User.CreateDefaultAdminUser())
-    app.migrations.add(UserToken.CreateUserToken())
 
-    // Run migration from within Xcode, because call to Bcrypt from command line fails on Swift < 5.3
-    try app.autoMigrate().wait()
-
+    // run migrations
+    try migrations(app)
     // register routes
     try routes(app)
 }

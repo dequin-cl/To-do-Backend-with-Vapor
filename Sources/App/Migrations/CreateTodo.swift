@@ -1,28 +1,18 @@
 import Fluent
 
-struct CreateTodo: Migration {
-    func prepare(on database: Database) -> EventLoopFuture<Void> {
-        return database.schema("todos")
-            .id()
-            .field("title", .string, .required)
-            .create()
-    }
+extension Todo {
+    struct CreateTodo: Migration {
+        var name: String { "Create Todo" }
 
-    func revert(on database: Database) -> EventLoopFuture<Void> {
-        return database.schema("todos").delete()
-    }
-}
+        func prepare(on database: Database) -> EventLoopFuture<Void> {
+            return database.schema("todos")
+                .id()
+                .field("title", .string, .required)
+                .create()
+        }
 
-struct AddAddressTodo: Migration {
-    func prepare(on database: Database) -> EventLoopFuture<Void> {
-        return database.schema("todos")
-            .field("address_street", .string)
-            .field("address_number", .int)
-            .field("address_other_information", .string)
-            .update()
-    }
-
-    func revert(on database: Database) -> EventLoopFuture<Void> {
-        return database.schema("todos").delete()
+        func revert(on database: Database) -> EventLoopFuture<Void> {
+            return database.schema("todos").delete()
+        }
     }
 }
