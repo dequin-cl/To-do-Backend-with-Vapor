@@ -3,8 +3,14 @@ import Vapor
 
 struct TodoController {
 
-    func index(req: Request) throws -> EventLoopFuture<[Todo]> {
-        return Todo.query(on: req.db).with(\.$tasks).all()
+    func index(req: Request) throws -> EventLoopFuture<[TodoDTO]> {
+        return Todo
+            .query(on: req.db)
+            .with(\.$tasks)
+            .all()
+            .map { todos -> [TodoDTO] in
+                todos.map{TodoDTO($0)}
+            }
     }
 
     func create(req: Request) throws -> EventLoopFuture<Todo> {
