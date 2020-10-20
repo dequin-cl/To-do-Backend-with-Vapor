@@ -25,3 +25,9 @@ Learning the usages of Vapor 4.0 where the inspiration for this repo.
 * [https://github.com/vapor/fluent.git](https://github.com/vapor/fluent.git)
 * [https://github.com/vapor/fluent-postgres-driver.git](https://github.com/vapor/fluent-postgres-driver.git)
 * [https://github.com/vapor/jwt.git](https://github.com/vapor/jwt.git)
+
+## Usage
+
+I created a Postman project to test the usage of the API.
+
+[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/2ecdb6384576a3972abd)
