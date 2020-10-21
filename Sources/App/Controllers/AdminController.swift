@@ -14,9 +14,10 @@ struct AdminController {
 
         return User
             .find(UUID(uuidString: payload.subject.value), on: req.db)
+            .unwrap(or: Abort(.notFound))
             .flatMapThrowing{ protoAdmin -> User in
 
-                guard let protoAdmin = protoAdmin, protoAdmin.isAdmin else {
+                guard protoAdmin.isAdmin else {
                     throw Abort(.unauthorized)
                 }
 
