@@ -15,7 +15,8 @@ func routes(_ app: Application) throws {
         UserRouter(),
         TodoRouter(),
         TaskRouter(),
-        AuthRouter()
+        AuthRouter(),
+        DocsRouter(app)
     ]
 
     try routeCollections.forEach(app.routes.register)

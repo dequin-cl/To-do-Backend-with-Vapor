@@ -19,6 +19,10 @@ struct TodoRouter: RouteCollection {
         todos.group(":id") { todo in
             todo.delete(use: controller.delete)
             todo.get(use: controller.info)
+                .summary("View ToDo's information")
+                .description("Shows complete information for a given ToDo identifier.")
+                .tags("Todo User")
+
         }
     }
 }

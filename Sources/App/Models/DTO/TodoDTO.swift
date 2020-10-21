@@ -7,6 +7,11 @@
 
 import Vapor
 
+import Sampleable
+import OpenAPIKit
+import OpenAPIReflection
+
+
 struct TodoDTO: Content {
     let id: String?
     let updatedAt: Date?
@@ -28,6 +33,13 @@ struct TodoDTO: Content {
             self.tasks = nil
         }
     }
+    
+    init(_ title: String) {
+        self.id = nil
+        self.updatedAt = nil
+        self.title = title
+        self.tasks = nil
+    }
 }
 
 struct CreateTodoDTO: Content {
@@ -37,5 +49,31 @@ struct CreateTodoDTO: Content {
     init(_ todo: Todo) {
         self.id = todo.id?.uuidString
         self.title = todo.title
+    }
+}
+
+
+extension TodoDTO: ResponseEncodable {
+    func encodeResponse(for request: Request) -> EventLoopFuture<Response> {
+        return request.eventLoop
+            .makeSucceededFuture(())
+            .flatMapThrowing {
+                let encoder = JSONEncoder()
+                encoder.dateEncodingStrategy =  .iso8601
+                
+                return try Response(body: .init(data: encoder.encode(self)))
+            }
+    }
+}
+
+extension TodoDTO: Sampleable {
+    static var sample: TodoDTO {
+        .init("Sample")
+    }
+}
+
+extension TodoDTO: OpenAPIEncodedSchemaType {
+    static func openAPISchema(using encoder: JSONEncoder) throws -> JSONSchema {
+        return try genericOpenAPISchemaGuess(using: encoder)
     }
 }

@@ -1,5 +1,6 @@
 import Fluent
 import Vapor
+import VaporOpenAPI
 
 struct TodoController {
 
@@ -32,7 +33,7 @@ struct TodoController {
             .transform(to: .ok)
     }
 
-    func info(req: Request) throws -> EventLoopFuture<TodoDTO> {
+    func info(req: TypedRequest<InfoContext>) throws -> EventLoopFuture<Response> {
         guard let todoUUID = req.parameters.get("id", as: UUID.self) else { throw Abort(.notFound) }
 
         return Todo
@@ -40,8 +41,31 @@ struct TodoController {
             .filter(\.$id == todoUUID)
             .with(\.$tasks)
             .first()
-            .map { todo -> TodoDTO in
-                TodoDTO(todo!)
+            .flatMap { todo -> EventLoopFuture<Response> in
+                guard let todo = todo else {
+                    return req.response.notFound
+                }
+                return req.response.success.encode(TodoDTO(todo))
             }
+    }
+}
+
+extension TodoController {
+    struct InfoContext: RouteContext {
+        typealias RequestBodyType = EmptyRequestBody
+        
+        static var defaultContentType: HTTPMediaType? = nil
+        static var shared = Self()
+        
+        let success: ResponseContext<TodoDTO> = .init { response in
+            response.headers.contentType = .json
+            response.status = .ok
+        }
+        
+        let notFound: CannedResponse<String> = .init(
+            response: Response(
+                status: .notFound,
+                headers: ["Content-Type": "text/plain"],
+                body: .init(string: "There's no ToDo with suplied identifier")))
     }
 }
